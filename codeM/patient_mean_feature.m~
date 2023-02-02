@@ -1,0 +1,28 @@
+function [ output_args ] = patient_mean_feature(projPLDA_tr,lab_tr,pat_lab_tr)
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+SD_spread=2; pt=15;
+for a=1:length(projPLDA_tr)
+    proj=projPLDA_tr{a}; lab=lab_tr{a}; pat_lab=pat_lab_tr{a};
+    pat_class=unique(pat_lab_tr{a});
+    clear XWC VWC MM
+    for which=1:size(proj,1)
+        for i=1:length(pat_class)
+            std_PLDA=SD_spread*std(proj(which,:));
+            lambdaPLDA=linspace(-std_PLDA,std_PLDA,pt);
+            [n] =hist(proj(which,pat_lab==pat_class(i)),lambdaPLDA');
+            XWC(:,which,i)=n/sum(n);
+            VWC(:,which,i)=XWC(:,i).*[1:length(XWC(:,i))]';
+            MM(which,i)=sum(VWC(:,which,i));
+        end
+    end
+    XWC_all{a}=XWC; VWC_all{a}=VWC; MM_all{a}=MM;
+end
+
+XWC_all
+VWC_all
+MM_all
+
+
+end
+
